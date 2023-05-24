@@ -8,25 +8,24 @@
     <body>
         <h1>Content Patcher made easy!</h1>
         <hr>
-        <div id="manifestElement">
+        <div id="manifestelement">
             <div id="manifestinput">
                 <h3>Manifest:</h3>
                 <div>
                     <form id="manifestform" oninput="handleManifestUpdate(event);">
                         <label for="modname">Mod Name:</label>
-                        <input type="text" id="modname" name="modname"><br>
+                        <input type="text" id="modname" name="Name"><br>
                         <label for="modauthor">Author Name:</label>
-                        <input type="text" id="modauthor" name="modauthor"><br>
+                        <input type="text" id="modauthor" name="Author"><br>
                         <label for="modversion">Mod Version</label>
-                        <input type="text" id="modversion" name="modversion"><br>
+                        <input type="text" id="modversion" name="Version"><br>
                         <label for="moddescription">Mod Description:</label>
-                        <input type="text" id="moddescription" name="moddescription"><br>
+                        <input type="text" id="moddescription" name="Description"><br>
                         <label for="uniqueid">Mod UniqueID:</label>
-                        <input type="text" id="uniqueid" name="uniqueid"><br>
+                        <input type="text" id="uniqueid" name="UniqueID"><br>
                         <label for="updatekeys">Update Keys:</label>
-                        <input type="text" id="updatekeys" name="updatekeys"><br>
+                        <input type="text" id="updatekeys" name="UpdateKeys"><br>
                     </form>
-                    <!-- <button type="submit" id="update" onclick="handleManifestUpdate(event);" style="font-size: 16px;">Update</button> -->
                 </div>
             </div>
             <div id="manifestoutput">
@@ -35,16 +34,21 @@
         </div>
         <div>
         <hr>
-        <div id="contentElement">
+        <div id="contentelement">
             <div id="contentinput">
             <h3>Content:</h3>
-                <div id="changesElement">
+                <div id="changeselement">
                     <button type="button" onclick="addChange(event);" style="margin-right: 192px">Add new change</button><br><br>
                     <form id="contentform" oninput="handleContentUpdate(event);">
                         <label for="format">Format:</label>
                         <input type="text" id="format" name="Format" value="1.28.0">
                         <input type="hidden" id="configschema" name="ConfigSchema">
-                        <input type="hidden" id="changes" name="Changes">
+                        <input type="hidden" id="changesinput" name="Changes">
+                        <datalist id="configoptions">
+                            <option value="Enabled">Enabled</option>
+                            <option value="Season">Season</option>
+                        </datalist>
+                        <div id="changes"></div>
                     </form>
                 </div>
             </div>
@@ -79,4 +83,4 @@
         </div>
     </body>
 </html>
-<script src="index.js"></script>
+<script src="index2.js"></script>

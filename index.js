@@ -1,281 +1,367 @@
 
 function handleManifestUpdate(ev) {
+    // * update manifest on text input
     ev.preventDefault;
     const data = new FormData(document.getElementById("manifestform"));
     const value = Object.fromEntries(data.entries());
 
     let json = JSON.stringify(value, null, 4);
-    json = json.replace("modname", "Name");
-    json = json.replace("modauthor", "Author");
-    json = json.replace("modversion", "Version");
-    json = json.replace("moddescription", "Description");
-    json = json.replace("uniqueid", "UniqueID");
-    json = json.replace("updatekeys", "UpdateKeys");
 
     let jsonElement = document.createElement("pre");
     jsonElement.innerHTML = json;
-    document.getElementById("manifestElement").appendChild(jsonElement)
-    document.getElementById("manifestElement").removeChild(document.getElementById("manifestoutput"))
+    document.getElementById("manifestelement").appendChild(jsonElement)
+    document.getElementById("manifestelement").removeChild(document.getElementById("manifestoutput"))
     jsonElement.id = "manifestoutput"
 }
 
-function addTarget(selectDiv) {
-    let selectTargetElement = document.createElement("select");
+function addTarget() {
+    // * add drop-down menu to select a file to target
+    const selectTargetElement = document.createElement("select");
     selectTargetElement.classList.add("target");
 
-    let optionPlaceholder = document.createElement("option");
-    optionPlaceholder.innerHTML = "(Target)";
-    optionPlaceholder.selected = true;
-    optionPlaceholder.disabled = true;
-    let optionCraftables = document.createElement("option");
-    optionCraftables.value = "Craftables";
-    optionCraftables.innerHTML = "Craftables";
-    let optionFurniture = document.createElement("option");
-    optionFurniture.value = "Furniture";
-    optionFurniture.innerHTML = "Furniture"
-    let optionTools = document.createElement("option");
-    optionTools.value = "Tools";
-    optionTools.innerHTML = "Tools";
-    let optionPortraits = document.createElement("option");
-    optionPortraits.value = "Portraits";
-    optionPortraits.innerHTML = "Portraits";
-    optionPortraits.disabled = true;
-    let optionWeapons = document.createElement("option");
-    optionTools.value = "Weapons";
-    optionTools.innerHTML = "Weapons";
+    ["(Target)", "Craftables", "Furniture", "Tools", "Weapons", "Portraits"].forEach( textOption => {
+        optionElement = document.createElement("option");
+        optionElement.value = textOption;
+        optionElement.innerHTML = textOption;
+        selectTargetElement.appendChild(optionElement);
 
-    selectTargetElement.appendChild(optionPlaceholder);
-    selectTargetElement.appendChild(optionCraftables);
-    selectTargetElement.appendChild(optionFurniture);
-    selectTargetElement.appendChild(optionTools);
-    selectTargetElement.appendChild(optionPortraits);
+        if (textOption == "(Target)") {
+            optionElement.selected = true;
+            optionElement.disabled = true;
+        }
+    })
 
-    selectDiv.appendChild(selectTargetElement);
+    return selectTargetElement;
 }
 
 function addAsset(selectAsset) {
-
-    let optionPlaceholder = document.createElement("option");
+    // * add drop-down menu to select an uploaded file asset
+    const optionPlaceholder = document.createElement("option");
+    // * placeholder option
     optionPlaceholder.innerHTML = "(Asset)";
     optionPlaceholder.selected = true;
     optionPlaceholder.disabled = true;
     selectAsset.appendChild(optionPlaceholder);
 
     fileAssets.forEach(element => {
-        let optionAsset = document.createElement("option");
+        const optionAsset = document.createElement("option");
         optionAsset.innerHTML = element.name;
         selectAsset.appendChild(optionAsset);
     })
 }
 
-function addChange(ev) {
-    ev.preventDefault;
-
-    let contentForm = document.getElementById("contentform")
-
-    let changeElement = document.createElement("div");
-    changeElement.classList.add("changes");
-    contentForm.appendChild(changeElement);
-
-    let individualChangeElement = document.createElement("div");
-    individualChangeElement.classList.add("individualchange");
-    changeElement.appendChild(individualChangeElement);
-
-    addTarget(individualChangeElement);
-
-    let assetElement = document.createElement("select");
-    assetElement.classList.add("asset");
-    addAsset(assetElement);
-    individualChangeElement.appendChild(assetElement);
-
-    let configElementLabel = document.createElement("label");
-    configElementLabel.innerHTML = "Config option: "
-    let checkboxElement = document.createElement("input");
-    checkboxElement.type = "checkbox";
-    checkboxElement.classList.add("config")
-    configElementLabel.appendChild(checkboxElement)
-    checkboxElement.onclick = function() {handleConfig(checkboxElement)};
-    individualChangeElement.append(configElementLabel);
-
-    let xElement = document.createElement("button");
+function addCancelButton() {
+    const xElement = document.createElement("button");
     xElement.type = "button";
-    xElement.preventDefault;
     xElement.classList.add("cancel");
     xElement.innerHTML = "❌";
-    xElement.onclick = function() {handleDelete(xElement, changeElement)};
-    individualChangeElement.append(xElement);
+    xElement.onclick = function() {handleDeleteChange(xElement)};
+    return xElement
+}
+
+function addChange(ev) {
+    // * add all elements needed to make a patch
+    ev.preventDefault;
+
+    const changeElement = document.getElementById("changes");
+    changeElement.style.display = "flex";
+
+    // * individual patch element
+    const individualChangeElement = document.createElement("div");
+    individualChangeElement.classList.add("individualchange");
+    headerElement = document.createElement("h4");
+    headerElement.innerHTML = "Change:";
+    headerElement.classList.add("changeheader");
+    individualChangeElement.appendChild(headerElement);
+    changeElement.appendChild(individualChangeElement);
+
+    // * target/asset dropdowns
+    const dropdownElements = document.createElement("div");
+    dropdownElements.classList.add("changedropdowns");
+
+    const selectTargetElement = addTarget();
+    dropdownElements.appendChild(selectTargetElement);
+
+    const assetElement = document.createElement("select");
+    assetElement.classList.add("asset");
+    addAsset(assetElement);
+    dropdownElements.appendChild(assetElement);
+
+    individualChangeElement.appendChild(dropdownElements);
+
+    // * cancel button
+    const xElement = addCancelButton();
+    xElement.classList.add("cancelchange");
+    dropdownElements.appendChild(xElement);
+
+    // * config options
+    const configButton = document.createElement("button");
+    configButton.classList.add("addconfig");
+    configButton.type = "button";
+    configButton.innerHTML = "Add config option";
+    individualChangeElement.appendChild(configButton);
+    
+    const configElement = document.createElement("div");
+    configElement.classList.add("config");
+    configElement.style.display = "flex";
+    configElement.style.flexDirection = "column";
+    individualChangeElement.appendChild(configElement);
+    
+    configButton.onclick = function() {addConfigTextbox(configElement)};
 
     handleContentUpdate(ev);
 }
 
-function handleConfig(checkboxElement) {
-    let contentOutput = document.getElementById("contentoutput");
-    let configButtons = document.querySelectorAll("input.config");
-    let json = contentOutput.textContent;
-    json = json.replace(/\s/g, "");
-    json = JSON.parse(json);
-    json["ConfigSchema"] = {};
+function addConfigTextbox(configElement) {
+    const configItemElement = document.createElement("div");
+    configItemElement.classList.add("configitem");
+    const configTextbox = document.createElement("input");
+    configTextbox.oldValue = configTextbox.value;
+    configTextbox.type = "text";
+    configTextbox.placeholder = "Config keyword:";
+    configTextbox.setAttribute("list", "configoptions");
+    configTextbox.classList.add("configtext");
+    configTextbox.oninput = function() {handleConfig(configElement)};
+    configItemElement.appendChild(configTextbox);
 
-    configButtons.forEach((value, i) => {
-        if (value === checkboxElement) {
-            let configTextElement = document.createElement("input");
-            configTextElement.oldValue = configTextElement.value;
-            let configElement = value.parentElement;
-            if (value.checked) {
-                configTextElement.type = "text";
-                configTextElement.placeholder = "Config keyword:";
-                configTextElement.classList.add("configtext");
-                configElement.appendChild(configTextElement);
-                configTextElement.oninput = function() {handleConfigText(configTextElement)};
-                json["Changes"][i].When = "Enabled"; // ! change here
-            }
-            else {
-                delete json["Changes"][i].When;
-                while (configElement.children.length > 1) {
-                    configElement.removeChild(configElement.children[1]);
+    const xElement = addCancelButton();
+    xElement.classList.add("cancelconfig");
+    configItemElement.appendChild(xElement)
+
+    configElement.appendChild(configItemElement);
+
+    handleConfig(configElement);
+
+}
+
+function addSeasonDropdown() {
+    const seasonDropdown = document.createElement("select");
+    seasonDropdown.classList.add("seasondropdown");
+    ["Spring", "Summer", "Fall", "Winter"].forEach( textOption => {
+        optionElement = document.createElement("option");
+        optionElement.value = textOption;
+        optionElement.innerHTML = textOption;
+        seasonDropdown.multiple = true;
+        seasonDropdown.appendChild(optionElement);
+    })
+    seasonDropdown.style.verticalAlign = "top";
+    seasonDropdown.style.marginTop = "3px";
+    return seasonDropdown;
+}
+
+function handleConfig(configElement) {
+    const contentOutput = document.getElementById("contentoutput");
+    let json = contentOutput.textContent;
+    json = json.replace(/\n/g, "");
+    json = JSON.parse(json);
+//     json["ConfigSchema"] = {};
+
+    const i = Array.prototype.indexOf.call(document.getElementById("changes").children, configElement.parentElement);
+    const configKeywordElements = configElement.querySelectorAll(".configtext");
+    let configsAreEmpty  = true;
+    let addDefaultKeyword = true;
+    configKeywordElements .forEach(element => {
+        if (!json["Changes"][i].When) {
+            json["Changes"][i].When  = {"Enabled": "true"};
+        }
+        else if (element.value) {
+            if (element.value === "Season") {
+                const seasonDropdown = addSeasonDropdown();
+                if (element.nextSibling.className !== "seasondropdown") {
+                    element.after(seasonDropdown);
                 }
+                seasonDropdown.options[0].selected = true;
+                json["Changes"][i].When = {"Season": [seasonDropdown.value]};
             }
-        }
-        if ("When" in json["Changes"][i]) {
-            let configOption = json["Changes"][i].When;
-            if (configOption in json["ConfigSchema"] === false) {
-                json["ConfigSchema"][configOption] = {"AllowValues": "true, false", "Default": "true"};
+            if (!(element.value === "Season") && element.nextSibling.className === "seasondropdown") {
+                element.parentElement.removeChild(element.nextSibling);
             }
-        }
-    });
-    contentOutput.innerHTML = JSON.stringify(json, null, 4);
-}
-
-function handleConfigText(configTextElement) {
-    let contentOutput = document.getElementById("contentoutput");
-    let json = contentOutput.textContent;
-    json = JSON.parse(json);
-    json["ConfigSchema"][configTextElement.value] = {"AllowValues": "true, false", "Default": "true"};
-    if (!configTextElement.oldValue) {
-        // delete json["ConfigSchema"][configTextElement.oldValue];
-        configTextElement.oldValue = configTextElement.value;
-        delete json["ConfigSchema"]["Enabled"];
-    }
-    else if (!configTextElement.value && configTextElement.oldValue) {
-        delete json["ConfigSchema"][configTextElement.oldValue];
-        json["ConfigSchema"] = {["Enabled"]: {"AllowValues": "true, false", "Default": "true"} };
-    }
-    else {
-        delete json["ConfigSchema"][configTextElement.oldValue];
-    }
-    configTextElement.oldValue = configTextElement.value;
-    contentOutput.innerHTML = JSON.stringify(json, null, 4);
-}
-
-function handleDelete(xElement, changeElement) {
-    let contentForm = document.getElementById("contentform");
-    let contentOutput = document.getElementById("contentoutput");
-    let cancelButtons = document.querySelectorAll("button.cancel");
-    let json = contentOutput.textContent;
-    json = json.replace(/\s/g, "");
-    json = JSON.parse(json);
-
-    cancelButtons.forEach((value, i) => {
-        if (value === xElement) {
-            json["Changes"].splice(i, 1);
-            contentOutput.innerHTML = JSON.stringify(json, null, 4);
+            json["Changes"][i]["When"][[element.value]] = "true";
+            configsAreEmpty = false;
+            addDefaultKeyword = false;
         }
     })
-    contentForm.removeChild(changeElement);
+    if (!addDefaultKeyword) {
+        delete json["Changes"][i]["When"]["Enabled"];
+    }
+    contentOutput.innerHTML = JSON.stringify(json, null, 4);
+}
+
+function handleDeleteChange(xElement) {
+    const changesElement = document.getElementById("changes");
+    const contentOutput = document.getElementById("contentoutput");
+
+    let json = contentOutput.textContent;
+    json = json.replace(/\n/g, "");
+    json = JSON.parse(json);
+
+    let individualChangeElement = xElement.parentElement;
+    while (individualChangeElement.className !== "individualchange") {
+        individualChangeElement = individualChangeElement.parentElement;
+    }
+    const i = Array.prototype.indexOf.call(changesElement.children, individualChangeElement);
+    if (xElement.parentElement.className === "changedropdowns") {
+        json["Changes"].splice(i, 1);
+        changesElement.removeChild(xElement.parentElement.parentElement);
+    }
+    else if (xElement.parentElement.className === "configitem") {
+        const configItemElement = xElement.parentElement;
+        const configValue = configItemElement.querySelector(".configtext").value;
+        delete json["Changes"][i]["When"][configValue];
+        configItemElement.parentElement.removeChild(configItemElement);
+
+        let configBool = false;
+        json["Changes"].forEach(change => {
+            configBool = (configValue in change["When"]);
+        })
+        if (!configBool) {
+            delete json["ConfigSchema"][configValue];
+        }
+        if (individualChangeElement.querySelector(".config").children.length === 0) {
+            delete json["Changes"][i]["When"];
+        }
+    }
+    handleConfigSchema(json);
+    contentOutput.innerHTML = JSON.stringify(json, null, 4);
+}
+
+function handleConfigSchema(json) {
+    let configKeywords = [];
+    json["Changes"].forEach(change => {
+        if (change.When) {
+            configKeywords = configKeywords.concat(Object.keys(change.When));
+        }
+    })
+    configKeywords.forEach(keyword => {
+        if (keyword !== "Season") {
+            json["ConfigSchema"][[keyword]] = {"AllowValues": "true, false", "Default": "true"};
+        }
+    })
 }
 
 function handleContentUpdate(ev) {
     ev.preventDefault;
-    let data = new FormData(document.getElementById("contentform"));
-    let value = Object.fromEntries(data.entries());
+    const data = new FormData(document.getElementById("contentform"));
+    const value = Object.fromEntries(data.entries());
 
-    value["ConfigSchema"] = {};
+    // value["ConfigSchema"] = {};
+    value["Changes"] = [];
 
-    value["Changes"] = Array();
-    let targetElements = document.querySelectorAll(".target");
-    targetElements.forEach(element => {
+    const allChanges = document.querySelectorAll(".individualchange");
+    allChanges.forEach((change, i) => {
+        const targetElement = change.querySelector(".target");
+        const assetElement = change.querySelector(".asset");
+        // const configCheckbox = change.querySelector(".configCheckbox");
+
         changeObject = {}
-        if (["Furniture", "Tools", "Weapons"].includes(element.value)) {
-            changeObject.Action = "EditImage";
-            changeObject.Target = `TileSheets/${element.value.toLowerCase()}`;
+        changeObject.Action = "EditImage";
+        if (["Furniture", "Tools", "Weapons"].includes(targetElement.value)) {
+            changeObject.Target = `TileSheets/${targetElement.value.toLowerCase()}`;
         }
-        else if (element.value !== "(Target)") {
-            changeObject.Action = "EditImage";
-            changeObject.Target = `TileSheets/${element.value}`;
+        else if (targetElement.value === "Portraits") {
+            changeObject.Target = `Portraits/`;
         }
-        if (element.nextSibling.value !== "(Asset)") {
-            changeObject.FromFile = `assets/${element.nextSibling.value}`;
+        else if (targetElement.value !== "(Target)") {
+            changeObject.Target = `TileSheets/${targetElement.value}`;
         }
-        if (element.nextSibling.nextSibling.children[0].checked) {
-            changeObject.When = "Enabled";
+
+        if (assetElement.value !== "(Asset)") {
+            changeObject.FromFile = `assets/${assetElement.value}`;
+        }
+
+        const configItems = change.querySelectorAll(".configitem");
+        if (configItems.length === 1 && !configItems[0].querySelector(".configtext").value) {
+            changeObject.When = {"Enabled": "true"};
+        }
+        else if (configItems.length === 0) {
+            delete changeObject.When
+        }
+        else {
+            let configList = {};
+            configItems.forEach(config => {
+                const value = config.querySelector(".configtext").value;
+                if (value !== "" && value !== "Season") {
+                    configList[[value]] = "true";
+                }
+                else if (value === "Season") {
+                    let selectedSeasons = [];
+                    Array.from(config.querySelector(".seasondropdown").selectedOptions).forEach(season => {
+                        selectedSeasons.push(season.value);
+                    })
+                    configList["Season"] = selectedSeasons;
+                }
+            })
+            changeObject.When = configList;
         }
         value["Changes"].push(changeObject);
-    });
+    })
 
 
     if (!document.querySelector("pre#contentoutput")) {
         let json = JSON.stringify(value, null, 4);
         let jsonElement = document.createElement("pre");
         jsonElement.innerHTML = json;
-        document.getElementById("contentElement").appendChild(jsonElement);
-        document.getElementById("contentElement").removeChild(document.getElementById("contentoutput"));
+        document.getElementById("contentelement").appendChild(jsonElement);
+        document.getElementById("contentelement").removeChild(document.getElementById("contentoutput"));
         jsonElement.id = "contentoutput";
     }
     else {
-        let contentOutput = document.getElementById("contentoutput");
+        const contentOutput = document.getElementById("contentoutput");
         let json = contentOutput.textContent;
-        json = json.replace(/\s/g, "");
+        json = json.replace(/\n/g, "");
         json = JSON.parse(json);
         json["Changes"] = value["Changes"];
         json["Format"] = value["Format"];
+        json["ConfigSchema"] = {};
+        handleConfigSchema(json);
         contentOutput.innerHTML = JSON.stringify(json, null, 4);
     }
 }
 
 const fileAssets = [];
 function addImagePreview(file) {
-    let imageElement = document.createElement("img");
-    let imagePreviews = document.getElementById("imagepreview");
+    const imageElement = document.createElement("img");
+    const imagePreviews = document.getElementById("imagepreview");
     imageElement.id = imagePreviews.children.length;
     imageElement.src = URL.createObjectURL(file);
-    let newPreviewElement = document.createElement("div");
+    const newPreviewElement = document.createElement("div");
     newPreviewElement.classList.add("image");
-    let newPreviewLabel = document.createElement("p");
+    const newPreviewLabel = document.createElement("p");
     imagePreviews.appendChild(newPreviewElement);
     newPreviewLabel.innerHTML = file.name;
     newPreviewElement.appendChild(newPreviewLabel);
     newPreviewElement.appendChild(imageElement);
 }
 function dropHandler(ev, fileAssets) {
-    // Prevent default behavior (Prevent file from being opened)
+    // * Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
 
     if (ev.dataTransfer.items) {
-        // Use DataTransferItemList interface to access the file(s)
+        // * Use DataTransferItemList interface to access the file(s)
         [...ev.dataTransfer.items].forEach((item, i) => {
-            // If dropped items aren't files, reject them
+            // * If dropped items aren't files, reject them
             if (item.kind === "file") {
                 const file = item.getAsFile();
                 fileAssets.push(file);
                 console.log(`File dropped: ${file.name}`);
                 addImagePreview(file);
 
-                let assetDropDowns = document.querySelectorAll(".asset");
+                const assetDropDowns = document.querySelectorAll(".asset");
                 if (assetDropDowns.length > 0) {
                     assetDropDowns.forEach(dropdown => {
                         if (dropdown.length <= 1) {
-                            let optionElement = document.createElement("option");
+                            const optionElement = document.createElement("option");
                             optionElement.value = file.name;
                             optionElement.innerHTML = file.name;
                             dropdown.appendChild(optionElement)
                         }
                         else {
-                            let assetList = [];
+                            const assetList = [];
                             Array.prototype.forEach(options => {
                                 assetList.append(option);
                             })
                             if (!assetList.includes(file.name)) {
-                                let optionElement = document.createElement("option");
+                                const optionElement = document.createElement("option");
                                 optionElement.value = file.name;
                                 optionElement.innerHTML = file.name;
                                 dropdown.appendChild(optionElement)
@@ -287,17 +373,17 @@ function dropHandler(ev, fileAssets) {
         });
         ev.target.classList.remove("highlight");
 
-        let assetDropDowns = document.querySelectorAll(".asset");
+        const assetDropDowns = document.querySelectorAll(".asset");
         if (assetDropDowns.length === 0) {
             assetDropDowns.forEach(dropdown => {
-                let option = document.createElement("option");
+                const option = document.createElement("option");
                 option.innerHTML = file
             })
         }
     }
 }
 function dragOverHandler(ev) {
-    // Prevent default behavior (Prevent file from being opened)
+    // * Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
 
     const dropArea = ev.target;
@@ -313,28 +399,28 @@ function fileChangeHandler(ev) {
     fileAssets.push(file);
     console.log(`File selected: ${file.name}`);
     addImagePreview(file);
-    
-    let assetDropDowns = document.querySelectorAll(".asset");
-                if (assetDropDowns.length > 0) {
-                    assetDropDowns.forEach(dropdown => {
-                        if (dropdown.length <= 1) {
-                            let optionElement = document.createElement("option");
-                            optionElement.value = file.name;
-                            optionElement.innerHTML = file.name;
-                            dropdown.appendChild(optionElement)
-                        }
-                        else {
-                            let assetList = [];
-                            Array.prototype.forEach(options => {
-                                assetList.append(option);
-                            })
-                            if (!assetList.includes(file.name)) {
-                                let optionElement = document.createElement("option");
-                                optionElement.value = file.name;
-                                optionElement.innerHTML = file.name;
-                                dropdown.appendChild(optionElement)
-                            }
-                        }
-                    });
+
+    const assetDropDowns = document.querySelectorAll(".asset");
+        if (assetDropDowns.length > 0) {
+            assetDropDowns.forEach(dropdown => {
+                if (dropdown.length <= 1) {
+                    const optionElement = document.createElement("option");
+                    optionElement.value = file.name;
+                    optionElement.innerHTML = file.name;
+                    dropdown.appendChild(optionElement)
                 }
+                else {
+                    const assetList = [];
+                    Array.prototype.forEach(options => {
+                        assetList.append(option);
+                    })
+                    if (!assetList.includes(file.name)) {
+                        const optionElement = document.createElement("option");
+                        optionElement.value = file.name;
+                        optionElement.innerHTML = file.name;
+                        dropdown.appendChild(optionElement)
+                }
+            }
+        });
+    }
 }

@@ -10,11 +10,7 @@ input { margin: 3px; }
     border-radius: 3px;
 }
 
-.change > div > select, button {
-    margin: 0px 5px;
-    vertical-align: middle;
-}
-#manifestElement, #contentElement {
+#manifestelement, #contentelement {
     display: flex;
     justify-content: space-between;
 }
@@ -28,8 +24,17 @@ input { margin: 3px; }
     box-shadow: inset 1px 1px 1px gray, inset -1px -1px 1px gray;
 }
 
-#contentform > div {
-    display: flex;
+#changes {
+    display: none;
+    flex-direction: column;
+}
+
+.changeheader {
+    margin: 0.25em 0;
+}
+
+.changedropdowns > select {
+    margin: 5px 5px;
 }
 
 .cancel {
@@ -37,6 +42,14 @@ input { margin: 3px; }
     background-color: transparent;
     margin-left: 0px;
     padding: 0px;
+}
+
+.addconfig {
+    margin-left: 5px;
+}
+
+.config {
+    margin-left: 10px;
 }
 
 #droparea {
@@ -47,6 +60,7 @@ input { margin: 3px; }
     justify-content: center;
     align-items: center;
 }
+
 #droparea.highlight {
     border-color: blue;
 }
@@ -58,9 +72,11 @@ input { margin: 3px; }
 #imagepreview {
     display: flex;
 }
+
 .image {
     margin: 0px 15px;
 }
+
 .image > img {
     border: 0.25px solid gray;
     padding: 1px;
