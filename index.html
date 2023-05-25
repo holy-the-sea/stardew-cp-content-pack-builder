@@ -7,6 +7,26 @@
     </head>
     <body>
         <h1>Content Patcher made easy!</h1>
+        <ol style="font-size: 18px;">
+            <li>Make a folder to hold your mod</li>
+            <li>Make sure that all of your assets are placed in a new <code>assets/</code> folder! within the mod folder</li>
+            <li>Fill in the Manifest form to generate your <code>manifest.json</code></li>
+            <li>Save this in your mod folder as <code>manifest.json</code></li>
+            <li>Select your options in Content to generate your <code>content.json</code></li>
+            <li>Save this in your mod folder as <code>content.json</code></li>
+        </ol>
+        <p>Your mod folder should now look like this:</p>
+        <div style="margin-left: 24px;">
+            <code>
+                [CP] New Mod/<br>
+                ├─ assets/<br>
+                │  ├─ asset1.png<br>
+                │  ├─ asset2.png<br>
+                ├─ content.json<br>
+                ├─ manifest.json
+    
+            </code>
+        </div>
         <hr>
         <div id="manifestelement">
             <div id="manifestinput">
@@ -37,17 +57,24 @@
         <div id="contentelement">
             <div id="contentinput">
             <h3>Content:</h3>
+            <div id="customlocationselement">
+                <button type="button" onclick="addCustomLocation(event);" style="margin-right: 192px">Add new custom location</button><br>
+            </div>
                 <div id="changeselement">
                     <button type="button" onclick="addChange(event);" style="margin-right: 192px">Add new change</button><br><br>
                     <form id="contentform" oninput="handleContentUpdate(event);">
                         <label for="format">Format:</label>
                         <input type="text" id="format" name="Format" value="1.28.0">
+                        <input type="hidden" id="customlocations" name="CustomLocations">
                         <input type="hidden" id="configschema" name="ConfigSchema">
                         <input type="hidden" id="changesinput" name="Changes">
                         <datalist id="configoptions">
                             <option value="Enabled">Enabled</option>
                             <option value="Season">Season</option>
+                            <option value="DaysOfWeek">Days of Week</option>
+                            <option value="Day">Day</option>
                         </datalist>
+                        <div id="locations"></div>
                         <div id="changes"></div>
                     </form>
                 </div>
@@ -66,7 +93,7 @@
                         type="file"
                         id="fileassets"
                         multiple
-                        accept=".png"
+                        accept=".png,.tmx"
                         hidden
                         onchange="fileChangeHandler(event);">
                 </form>
@@ -83,4 +110,4 @@
         </div>
     </body>
 </html>
-<script src="index2.js"></script>
+<script src="index.js"></script>

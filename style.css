@@ -4,8 +4,8 @@ input { margin: 3px; }
 
 .button {
     font-size: 13px;
-    background-color: whitesmoke;
-    padding: 2px 0px;
+    background-color: #F0F0F4;
+    padding: 2px 5px;
     border: 0.5px solid gray;
     border-radius: 3px;
 }
@@ -24,12 +24,12 @@ input { margin: 3px; }
     box-shadow: inset 1px 1px 1px gray, inset -1px -1px 1px gray;
 }
 
-#changes {
+#changes, #locations {
     display: none;
     flex-direction: column;
 }
 
-.changeheader {
+.changeheader, .locationheader {
     margin: 0.25em 0;
 }
 
@@ -49,7 +49,7 @@ input { margin: 3px; }
 }
 
 .config {
-    margin-left: 10px;
+    margin-left: 20px;
 }
 
 #droparea {

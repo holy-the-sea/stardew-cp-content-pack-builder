@@ -1,3 +1,182 @@
+function addPortraitsDatalist () {
+    // * add drop-down menu to select character for portrait option
+    const selectPortraitElement = document.createElement("select");
+    selectPortraitElement.classList.add("portrait");
+
+    const vanillaCharacters = [
+        "Abigail",
+        "Alex",
+        "Caroline",
+        "Clint",
+        "Demetrius",
+        "Elliott",
+        "Emily",
+        "Evelyn",
+        "George",
+        "Gunther",
+        "Gus",
+        "Haley",
+        "Harvey",
+        "Jas",
+        "Jodi",
+        "Kent",
+        "Leah",
+        "Lewis",
+        "Linus",
+        "Marlon",
+        "Marnie",
+        "Maru",
+        "Pam",
+        "Penny",
+        "Pierre",
+        "Robin",
+        "Sam",
+        "Sandy",
+        "Sebastian",
+        "Shane",
+        "Vincent",
+        "Willy",
+        "Wizard"
+    ]
+
+    const portraitOptions = document.createElement("datalist");
+    portraitOptions.id = "portraitoptions";
+    vanillaCharacters.forEach(character => {
+        const characterOption = document.createElement("option");
+        characterOption.value = character;
+        characterOption.innerHTML = character;
+        portraitOptions.appendChild(characterOption);
+    })
+    document.getElementById("configoptions").after(portraitOptions);
+}
+
+function addAnimalsDatalist () {
+    // * add drop-down menu to select animal
+    const selectAnimalElement = document.createElement("select");
+    selectAnimalElement.classList.add("portrait");
+
+    const vanillaAnimals = [
+        "BabyBlue Chicken",
+        "Blue Chicken",
+        "BabyBrown Chicken",
+        "Brown Chicken",
+        "BabyGolden Chicken",
+        "Golden Chicken",
+        "BabyVoid Chicken",
+        "Void Chicken",
+        "BabyWhite Chicken",
+        "White Chicken",
+        "Dinosaur",
+        "Duck",
+        "BabyRabbit",
+        "Rabbit",
+        "BabyBrown Cow",
+        "Brown Cow",
+        "BabyWhite Cow",
+        "White Cow",
+        "BabyGoat",
+        "Goat",
+        "BabyOstrich",
+        "Ostrich",
+        "BabyPig",
+        "Pig",
+        "BabySheep",
+        "Sheep",
+        "ShearedSheep",
+        "horse",
+        "cat",
+        "cat1",
+        "cat2",
+        "dog",
+        "dog1",
+        "dog2"
+    ]
+
+    const animalOptions = document.createElement("datalist");
+    animalOptions.id = "animaloptions";
+    vanillaAnimals.forEach(animal => {
+        const animalOption = document.createElement("option");
+        animalOption.value = animal;
+        animalOption.innerHTML = animal;
+        animalOptions.appendChild(animalOption);
+    })
+    document.getElementById("configoptions").after(animalOptions);
+}
+
+function addBuildingsDatalist () {
+    // * add drop-down menu to select building
+    const selectBuildingElement = document.createElement("select");
+    selectBuildingElement.classList.add("building");
+
+    const vanillaBuildings = [
+        "Barn",
+        "Big Barn",
+        "Deluxe Barn",
+        "Deluxe Barn_PaintMask",
+        "Coop",
+        "Big Coop",
+        "Deluxe Coop",
+        "Deluxe Coop_PaintMask",
+        "Shed",
+        "Big Shed",
+        "Big Shed_PaintMask",
+        "Stable",
+        "Stable_PaintMask",
+        "houses",
+        "houses_PaintMask",
+        "Fish Pond",
+        "Gold Clock",
+        "Greenhouse",
+        "Junimo Hut",
+        "Log Cabin",
+        "Log Cabin_PaintMask",
+        "Plank Cabin",
+        "Plank Cabin_PaintMask",
+        "Stone Cabin",
+        "Stone Cabin_PaintMask",
+        "Mill",
+        "Shipping Bin",
+        "Silo",
+        "Slime Hutch",
+        "Well",
+        "Desert Obelisk",
+        "Earth Obelisk",
+        "Island Obelisk",
+        "Water Obelisk",
+    ]
+
+    const buildingOptions = document.createElement("datalist");
+    buildingOptions.id = "buildingoptions";
+    vanillaBuildings.forEach(building => {
+        const buildingOption = document.createElement("option");
+        buildingOption.value = building;
+        buildingOption.innerHTML = building;
+        buildingOptions.appendChild(buildingOption);
+    })
+    document.getElementById("configoptions").after(buildingOptions);
+}
+
+function addDaysOfWeekDatalist () {
+    // * add drop-down menu to select days of week for config option
+    const selectDaysOfWeekElement = document.createElement("select");
+    selectDaysOfWeekElement.classList.add("daysofweek");
+
+    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+    const daysOfWeekOptions = document.createElement("datalist");
+    daysOfWeekOptions.id = "daysofweekoptions";
+    daysOfWeek.forEach(day => {
+        const dayOfWeekOption = document.createElement("option");
+        dayOfWeekOption.value = day;
+        dayOfWeekOption.innerHTML = day;
+        daysOfWeekOptions.appendChild(dayOfWeekOption);
+    })
+    document.getElementById("configoptions").after(daysOfWeekOptions);
+}
+addAnimalsDatalist();
+addBuildingsDatalist();
+addPortraitsDatalist();
+addDaysOfWeekDatalist();
 
 function handleManifestUpdate(ev) {
     // * update manifest on text input
@@ -14,12 +193,28 @@ function handleManifestUpdate(ev) {
     jsonElement.id = "manifestoutput"
 }
 
+function addMapFile(selectMapFile) {
+    // * add drop-down menu to select an uploaded file asset
+    const optionPlaceholder = document.createElement("option");
+    // * placeholder option
+    optionPlaceholder.innerHTML = "(Map file)";
+    optionPlaceholder.selected = true;
+    optionPlaceholder.disabled = true;
+    selectMapFile.appendChild(optionPlaceholder);
+
+    fileAssets.forEach(element => {
+        const optionAsset = document.createElement("option");
+        optionAsset.innerHTML = element.name;
+        selectMapFile.appendChild(optionAsset);
+    })
+}
+
 function addTarget() {
     // * add drop-down menu to select a file to target
     const selectTargetElement = document.createElement("select");
     selectTargetElement.classList.add("target");
 
-    ["(Target)", "Craftables", "Furniture", "Tools", "Weapons", "Portraits"].forEach( textOption => {
+    ["(Target)", "Animals", "Buildings", "Craftables", "Furniture", "Portraits", "Tools", "Weapons"].forEach( textOption => {
         optionElement = document.createElement("option");
         optionElement.value = textOption;
         optionElement.innerHTML = textOption;
@@ -44,10 +239,48 @@ function addAsset(selectAsset) {
     selectAsset.appendChild(optionPlaceholder);
 
     fileAssets.forEach(element => {
-        const optionAsset = document.createElement("option");
-        optionAsset.innerHTML = element.name;
-        selectAsset.appendChild(optionAsset);
+        if (element.name.includes(".png")) {
+            const optionAsset = document.createElement("option");
+            optionAsset.innerHTML = element.name;
+            selectAsset.appendChild(optionAsset);
+        }
     })
+}
+
+function addAnimalsInput() {
+    const animalsInput = document.createElement("input");
+    animalsInput.classList.add("animalsdropdown");
+    animalsInput.type = "text";
+    animalsInput.placeholder = "Animal";
+    animalsInput.setAttribute("list", "animaloptions");
+    return animalsInput;
+}
+
+function addBuildingsInput() {
+    const buildingsInput = document.createElement("input");
+    buildingsInput.classList.add("buildingsdropdown");
+    buildingsInput.type = "text";
+    buildingsInput.placeholder = "Building";
+    buildingsInput.setAttribute("list", "buildingoptions");
+    return buildingsInput;
+}
+
+function addPortraitsInput() {
+    const portraitsInput = document.createElement("input");
+    portraitsInput.classList.add("portraitsdropdown");
+    portraitsInput.type = "text";
+    portraitsInput.placeholder = "Character name";
+    portraitsInput.setAttribute("list", "portraitoptions");
+    return portraitsInput;
+}
+
+function addDayOfWeekInput() {
+    const dayOfWeekInput = document.createElement("input");
+    dayOfWeekInput.classList.add("dayofweekdropdown");
+    dayOfWeekInput.type = "text";
+    dayOfWeekInput.placeholder = "Day of Week";
+    dayOfWeekInput.setAttribute("list", "dayofweekoptions");
+    return dayOfWeekInput;
 }
 
 function addCancelButton() {
@@ -57,6 +290,47 @@ function addCancelButton() {
     xElement.innerHTML = "❌";
     xElement.onclick = function() {handleDeleteChange(xElement)};
     return xElement
+}
+
+function addCustomLocation(ev) {
+    // * add all elements needed to make a patch
+    ev.preventDefault;
+
+    const customLocationElement = document.getElementById("locations");
+    customLocationElement.style.display = "flex";
+
+    // * individual custom location element
+    const individualCustomLocation = document.createElement("div");
+    individualCustomLocation.classList.add("individuallocation");
+    headerElement = document.createElement("h4");
+    headerElement.innerHTML = "Custom Location:";
+    headerElement.classList.add("locationheader");
+    individualCustomLocation.appendChild(headerElement);
+    customLocationElement.appendChild(individualCustomLocation);
+
+    // * name/mapfile dropdowns
+    const dropdownElements = document.createElement("div");
+    dropdownElements.classList.add("locationdropdowns");
+
+    const locationNameInputElement = document.createElement("input");
+    locationNameInputElement.classList.add("locationname")
+    locationNameInputElement.type = "text";
+    locationNameInputElement.placeholder = "Custom Location Name";
+    dropdownElements.appendChild(locationNameInputElement);
+
+    const mapFileElement = document.createElement("select");
+    mapFileElement.classList.add("mapfile");
+    addMapFile(mapFileElement);
+    dropdownElements.appendChild(mapFileElement);
+
+    individualCustomLocation.appendChild(dropdownElements);
+
+    // * cancel button
+    const xElement = addCancelButton();
+    xElement.classList.add("cancelchange");
+    dropdownElements.appendChild(xElement);
+
+    handleContentUpdate(ev);
 }
 
 function addChange(ev) {
@@ -118,7 +392,7 @@ function addConfigTextbox(configElement) {
     const configTextbox = document.createElement("input");
     configTextbox.oldValue = configTextbox.value;
     configTextbox.type = "text";
-    configTextbox.placeholder = "Config keyword:";
+    configTextbox.placeholder = "Config keyword";
     configTextbox.setAttribute("list", "configoptions");
     configTextbox.classList.add("configtext");
     configTextbox.oninput = function() {handleConfig(configElement)};
@@ -141,12 +415,44 @@ function addSeasonDropdown() {
         optionElement = document.createElement("option");
         optionElement.value = textOption;
         optionElement.innerHTML = textOption;
-        seasonDropdown.multiple = true;
         seasonDropdown.appendChild(optionElement);
     })
+    seasonDropdown.multiple = true;
     seasonDropdown.style.verticalAlign = "top";
     seasonDropdown.style.marginTop = "3px";
     return seasonDropdown;
+}
+
+function addDaysOfWeekDropdown() {
+    const daysOfWeekDropdown = document.createElement("select");
+    daysOfWeekDropdown.classList.add("daysofweekdropdown");
+    [
+        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" 
+    ].forEach( textOption => {
+        optionElement = document.createElement("option");
+        optionElement.value = textOption;
+        optionElement.innerHTML = textOption;
+        daysOfWeekDropdown.appendChild(optionElement);
+    })
+    daysOfWeekDropdown.multiple = true;
+    daysOfWeekDropdown.style.verticalAlign = "top";
+    daysOfWeekDropdown.style.marginTop = "3px";
+    return daysOfWeekDropdown;
+}
+
+function addDayDropdown() {
+    const dayDropdown = document.createElement("select");
+    dayDropdown.classList.add("daydropdown");
+    [...Array(31).keys()].forEach(i => {
+        optionElement = document.createElement("option");
+        optionElement.value = i;
+        optionElement.innerHTML = i;
+        dayDropdown.appendChild(optionElement);
+    })
+    dayDropdown.multiple = true;
+    dayDropdown.style.verticalAlign = "top";
+    dayDropdown.style.marginTop = "3px";
+    return dayDropdown;
 }
 
 function handleConfig(configElement) {
@@ -154,15 +460,12 @@ function handleConfig(configElement) {
     let json = contentOutput.textContent;
     json = json.replace(/\n/g, "");
     json = JSON.parse(json);
-//     json["ConfigSchema"] = {};
 
     const i = Array.prototype.indexOf.call(document.getElementById("changes").children, configElement.parentElement);
     const configKeywordElements = configElement.querySelectorAll(".configtext");
-    let configsAreEmpty  = true;
-    let addDefaultKeyword = true;
     configKeywordElements .forEach(element => {
         if (!json["Changes"][i].When) {
-            json["Changes"][i].When  = {"Enabled": "true"};
+            json["Changes"][i].When  = {};
         }
         else if (element.value) {
             if (element.value === "Season") {
@@ -171,23 +474,43 @@ function handleConfig(configElement) {
                     element.after(seasonDropdown);
                 }
                 seasonDropdown.options[0].selected = true;
-                json["Changes"][i].When = {"Season": [seasonDropdown.value]};
+                json["Changes"][i]["When"]["Season"] = seasonDropdown.value;
             }
             if (!(element.value === "Season") && element.nextSibling.className === "seasondropdown") {
                 element.parentElement.removeChild(element.nextSibling);
             }
+            if (element.value === "DaysOfWeek") {
+                const daysOfWeekDropdown = addDaysOfWeekDropdown();
+                if (element.nextSibling.className !== "daysofweekdropdown") {
+                    element.after(daysOfWeekDropdown);
+                }
+                daysOfWeekDropdown.options[0].selected = true;
+                json["Changes"][i]["When"]["DaysOfWeek"] = daysOfWeekDropdown.value;
+            }
+            if (!(element.value === "DaysOfWeek") && element.nextSibling.className === "daysofweekdropdown") {
+                element.parentElement.removeChild(element.nextSibling);
+            }
+
+            if (element.value === "Day") {
+                const dayDropdown = addDayDropdown();
+                if (element.nextSibling.className !== "daydropdown") {
+                    element.after(dayDropdown);
+                }
+                dayDropdown.options[0].selected = true;
+                json["Changes"][i]["When"]["Day"] = dayDropdown.value;
+            }
+            if (!(element.value === "Day") && element.nextSibling.className === "daydropdown") {
+                element.parentElement.removeChild(element.nextSibling);
+            }
+            
             json["Changes"][i]["When"][[element.value]] = "true";
-            configsAreEmpty = false;
-            addDefaultKeyword = false;
         }
     })
-    if (!addDefaultKeyword) {
-        delete json["Changes"][i]["When"]["Enabled"];
-    }
     contentOutput.innerHTML = JSON.stringify(json, null, 4);
 }
 
 function handleDeleteChange(xElement) {
+    const locationsElement = document.getElementById("locations");
     const changesElement = document.getElementById("changes");
     const contentOutput = document.getElementById("contentoutput");
 
@@ -195,30 +518,42 @@ function handleDeleteChange(xElement) {
     json = json.replace(/\n/g, "");
     json = JSON.parse(json);
 
-    let individualChangeElement = xElement.parentElement;
-    while (individualChangeElement.className !== "individualchange") {
-        individualChangeElement = individualChangeElement.parentElement;
-    }
-    const i = Array.prototype.indexOf.call(changesElement.children, individualChangeElement);
-    if (xElement.parentElement.className === "changedropdowns") {
-        json["Changes"].splice(i, 1);
-        changesElement.removeChild(xElement.parentElement.parentElement);
-    }
-    else if (xElement.parentElement.className === "configitem") {
-        const configItemElement = xElement.parentElement;
-        const configValue = configItemElement.querySelector(".configtext").value;
-        delete json["Changes"][i]["When"][configValue];
-        configItemElement.parentElement.removeChild(configItemElement);
+    const individualElement = xElement.parentElement;
 
-        let configBool = false;
-        json["Changes"].forEach(change => {
-            configBool = (configValue in change["When"]);
-        })
-        if (!configBool) {
-            delete json["ConfigSchema"][configValue];
+    if (individualElement.className === "locationdropdowns") {
+        const individualLocationElement = individualElement.parentElement;
+        const i = Array.prototype.indexOf.call(locationsElement.children, individualLocationElement);
+        json["CustomLocations"].splice(i, 1);
+        locationsElement.removeChild(xElement.parentElement.parentElement);
+    }
+
+    else if (individualElement.className === "changedropdowns") {
+        let individualChangeElement = individualElement;
+
+        while (individualChangeElement.className !== "individualchange") {
+            individualChangeElement = individualChangeElement.parentElement;
         }
-        if (individualChangeElement.querySelector(".config").children.length === 0) {
-            delete json["Changes"][i]["When"];
+        const i = Array.prototype.indexOf.call(changesElement.children, individualChangeElement);
+        if (xElement.parentElement.className === "changedropdowns") {
+            json["Changes"].splice(i, 1);
+            changesElement.removeChild(xElement.parentElement.parentElement);
+        }
+        else if (xElement.parentElement.className === "configitem") {
+            const configItemElement = xElement.parentElement;
+            const configValue = configItemElement.querySelector(".configtext").value;
+            delete json["Changes"][i]["When"][configValue];
+            configItemElement.parentElement.removeChild(configItemElement);
+    
+            let configBool = false;
+            json["Changes"].forEach(change => {
+                configBool = (configValue in change["When"]);
+            })
+            if (!configBool) {
+                delete json["ConfigSchema"][configValue];
+            }
+            if (individualChangeElement.querySelector(".config").children.length === 0) {
+                delete json["Changes"][i]["When"];
+            }
         }
     }
     handleConfigSchema(json);
@@ -232,11 +567,16 @@ function handleConfigSchema(json) {
             configKeywords = configKeywords.concat(Object.keys(change.When));
         }
     })
-    configKeywords.forEach(keyword => {
-        if (keyword !== "Season") {
-            json["ConfigSchema"][[keyword]] = {"AllowValues": "true, false", "Default": "true"};
-        }
-    })
+    if (configKeywords.length === 0) {
+        json["ConfigSchema"] = {};
+    }
+    else {
+        configKeywords.forEach(keyword => {
+            if (keyword !== "Season" && keyword !== "DaysOfWeek" && keyword !== "Day") {
+                json["ConfigSchema"][[keyword]] = {"AllowValues": "true, false", "Default": "true"};
+            }
+        })
+    }
 }
 
 function handleContentUpdate(ev) {
@@ -244,25 +584,92 @@ function handleContentUpdate(ev) {
     const data = new FormData(document.getElementById("contentform"));
     const value = Object.fromEntries(data.entries());
 
-    // value["ConfigSchema"] = {};
     value["Changes"] = [];
+    value["CustomLocations"] = [];
+
+    const allCustomLocations = document.querySelectorAll(".individuallocation");
+    allCustomLocations.forEach(location => {
+        const locationNameElement = location.querySelector(".locationname");
+        const mapFileElement = location.querySelector(".mapfile");
+
+        let customLocationsObject = {};
+        customLocationsObject.Name = locationNameElement.value;
+        if (mapFileElement.value !== "(Map file)") {
+            customLocationsObject.FromMapFile = mapFileElement.value;
+        }
+        else {
+            customLocationsObject.FromMapFile = "";
+        }
+        value["CustomLocations"].push(customLocationsObject);
+    })
 
     const allChanges = document.querySelectorAll(".individualchange");
-    allChanges.forEach((change, i) => {
+    allChanges.forEach(change => {
         const targetElement = change.querySelector(".target");
         const assetElement = change.querySelector(".asset");
-        // const configCheckbox = change.querySelector(".configCheckbox");
 
-        changeObject = {}
-        changeObject.Action = "EditImage";
+        let changeObject = {};
         if (["Furniture", "Tools", "Weapons"].includes(targetElement.value)) {
+            changeObject.Action = "EditImage";
             changeObject.Target = `TileSheets/${targetElement.value.toLowerCase()}`;
         }
-        else if (targetElement.value === "Portraits") {
-            changeObject.Target = `Portraits/`;
+        else if (targetElement.value === "Animals") {
+            changeObject.Action = "EditImage";
+            if (targetElement.nextElementSibling.className !== "animalsdropdown") {
+                const animalsDropdown = addAnimalsInput();
+                targetElement.after(animalsDropdown);
+            }
+            if (targetElement.nextElementSibling.className === "animalsdropdown") {
+                const animalsDropdown = targetElement.nextElementSibling;
+                changeObject.Target = `Animals/${animalsDropdown.value}`;
+            }
+            if (["buildingsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+                targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
+            }
         }
+        else if (targetElement.value === "Buildings") {
+            changeObject.Action = "EditImage";
+            if (targetElement.nextElementSibling.className !== "buildingsdropdown") {
+                const buildingsDropdown = addBuildingsInput();
+                targetElement.after(buildingsDropdown);
+            }
+            if (targetElement.nextElementSibling.className === "buildingsdropdown") {
+                const buildingsDropdown = targetElement.nextElementSibling;
+                changeObject.Target = `Animals/${buildingsDropdown.value}`;
+            }
+            if (["animalsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+                targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
+            }
+        }
+        else if (targetElement.value === "Portraits") {
+            changeObject.Action = "EditImage";
+            if (targetElement.nextElementSibling.className !== "portraitsdropdown") {
+                const portraitsDropdown = addPortraitsInput();
+                targetElement.after(portraitsDropdown);
+            }
+            if (targetElement.nextElementSibling.className === "portraitsdropdown") {
+                const portraitsDropdown = targetElement.nextElementSibling;
+                changeObject.Target = `Portraits/${portraitsDropdown.value}`;
+            }
+            if (["animalsdropdown", "buildingsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+                targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
+            }
+        }
+        
         else if (targetElement.value !== "(Target)") {
             changeObject.Target = `TileSheets/${targetElement.value}`;
+        }
+        
+        if (targetElement.value !== "Animals" && targetElement.nextElementSibling.className === "animalsdropdown") {
+            targetElement.parentElement.removeChild(targetElement.nextSibling);
+        }
+        
+        if (targetElement.value !== "Buildings" && targetElement.nextElementSibling.className === "buildingsdropdown") {
+            targetElement.parentElement.removeChild(targetElement.nextSibling);
+        }
+        
+        if (targetElement.value !== "Portraits" && targetElement.nextElementSibling.className === "portraitsdropdown") {
+            targetElement.parentElement.removeChild(targetElement.nextSibling);
         }
 
         if (assetElement.value !== "(Asset)") {
@@ -271,16 +678,16 @@ function handleContentUpdate(ev) {
 
         const configItems = change.querySelectorAll(".configitem");
         if (configItems.length === 1 && !configItems[0].querySelector(".configtext").value) {
-            changeObject.When = {"Enabled": "true"};
+            changeObject.When = {};
         }
-        else if (configItems.length === 0) {
+        if (configItems.length === 0) {
             delete changeObject.When
         }
         else {
             let configList = {};
             configItems.forEach(config => {
                 const value = config.querySelector(".configtext").value;
-                if (value !== "" && value !== "Season") {
+                if (value !== "" && !["Season", "DaysOfWeek", "Day"].includes(value)) {
                     configList[[value]] = "true";
                 }
                 else if (value === "Season") {
@@ -290,12 +697,25 @@ function handleContentUpdate(ev) {
                     })
                     configList["Season"] = selectedSeasons;
                 }
+                else if (value === "DaysOfWeek") {
+                    let selectedDaysOfWeek = [];
+                    Array.from(config.querySelector(".daysofweekdropdown").selectedOptions).forEach(dayOfWeek => {
+                        selectedDaysOfWeek.push(dayOfWeek.value);
+                    })
+                    configList["DaysOfWeek"] = selectedDaysOfWeek;
+                }
+                else if (value === "Day") {
+                    let selectedDays = [];
+                    Array.from(config.querySelector(".daydropdown").selectedOptions).forEach(day => {
+                        selectedDays.push(parseInt(day.value) + 1 );
+                    })
+                    configList["Day"] = selectedDays;
+                }
             })
             changeObject.When = configList;
         }
         value["Changes"].push(changeObject);
     })
-
 
     if (!document.querySelector("pre#contentoutput")) {
         let json = JSON.stringify(value, null, 4);
@@ -310,6 +730,7 @@ function handleContentUpdate(ev) {
         let json = contentOutput.textContent;
         json = json.replace(/\n/g, "");
         json = JSON.parse(json);
+        json["CustomLocations"] = value["CustomLocations"];
         json["Changes"] = value["Changes"];
         json["Format"] = value["Format"];
         json["ConfigSchema"] = {};
@@ -338,48 +759,68 @@ function dropHandler(ev, fileAssets) {
 
     if (ev.dataTransfer.items) {
         // * Use DataTransferItemList interface to access the file(s)
-        [...ev.dataTransfer.items].forEach((item, i) => {
+        [...ev.dataTransfer.items].forEach(item => {
             // * If dropped items aren't files, reject them
             if (item.kind === "file") {
                 const file = item.getAsFile();
                 fileAssets.push(file);
                 console.log(`File dropped: ${file.name}`);
-                addImagePreview(file);
-
-                const assetDropDowns = document.querySelectorAll(".asset");
-                if (assetDropDowns.length > 0) {
-                    assetDropDowns.forEach(dropdown => {
-                        if (dropdown.length <= 1) {
-                            const optionElement = document.createElement("option");
-                            optionElement.value = file.name;
-                            optionElement.innerHTML = file.name;
-                            dropdown.appendChild(optionElement)
-                        }
-                        else {
-                            const assetList = [];
-                            Array.prototype.forEach(options => {
-                                assetList.append(option);
-                            })
-                            if (!assetList.includes(file.name)) {
+                if (file.name.includes(".png")) {
+                    addImagePreview(file);
+    
+                    const assetDropDowns = document.querySelectorAll(".asset");
+                    if (assetDropDowns.length > 0) {
+                        assetDropDowns.forEach(dropdown => {
+                            if (dropdown.length <= 1) {
                                 const optionElement = document.createElement("option");
                                 optionElement.value = file.name;
                                 optionElement.innerHTML = file.name;
                                 dropdown.appendChild(optionElement)
                             }
-                        }
-                    });
+                            else {
+                                const assetList = [];
+                                Array.prototype.forEach(option => {
+                                    assetList.append(option);
+                                })
+                                if (!assetList.includes(file.name)) {
+                                    const optionElement = document.createElement("option");
+                                    optionElement.value = file.name;
+                                    optionElement.innerHTML = file.name;
+                                    dropdown.appendChild(optionElement)
+                                }
+                            }
+                        });
+                    }
+                }
+
+                else if (file.name.includes(".tmx")) {
+                    const mapFileDropDowns = document.querySelectorAll(".mapfile");
+                    if (mapFileDropDowns.length > 0) {
+                        mapFileDropDowns.forEach(dropdown => {
+                            if (dropdown.length <= 1) {
+                                const optionElement = document.createElement("option");
+                                optionElement.value = file.name;
+                                optionElement.innerHTML = file.name;
+                                dropdown.appendChild(optionElement)
+                            }
+                            else {
+                                const mapFileList = [];
+                                Array.prototype.forEach(option => {
+                                    mapFileList.append(option);
+                                })
+                                if (!mapFileList.includes(file.name)) {
+                                    const optionElement = document.createElement("option");
+                                    optionElement.value = file.name;
+                                    optionElement.innerHTML = file.name;
+                                    dropdown.appendChild(optionElement)
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });
         ev.target.classList.remove("highlight");
-
-        const assetDropDowns = document.querySelectorAll(".asset");
-        if (assetDropDowns.length === 0) {
-            assetDropDowns.forEach(dropdown => {
-                const option = document.createElement("option");
-                option.innerHTML = file
-            })
-        }
     }
 }
 function dragOverHandler(ev) {
@@ -411,7 +852,7 @@ function fileChangeHandler(ev) {
                 }
                 else {
                     const assetList = [];
-                    Array.prototype.forEach(options => {
+                    Array.prototype.forEach(option => {
                         assetList.append(option);
                     })
                     if (!assetList.includes(file.name)) {
