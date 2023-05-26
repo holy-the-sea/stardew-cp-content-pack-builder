@@ -649,16 +649,19 @@ function handleDeleteChange(xElement) {
         let individualChangeElement = individualElement;
         const i = Array.prototype.indexOf.call(changesElement.children, individualChangeElement.parentElement.parentElement);
         const configItemElement = xElement.parentElement;
+        const configSectionElement = configItemElement.parentElement;
         const configValue = configItemElement.querySelector(".configtext").value;
         delete json["Changes"][i]["When"][configValue];
-        if (configItemElement.parentElement.children.length === 0) {
+        configItemElement.parentElement.removeChild(configItemElement);
+        if (configSectionElement.children.length === 0) {
             delete json["Changes"][i]["When"];
         }
-        configItemElement.parentElement.removeChild(configItemElement);
 
         let configBool = false;
         json["Changes"].forEach(change => {
-            configBool = (configValue in change["When"]);
+            if (change.length) {
+                configBool = (configValue in change["When"]);
+            }
         })
         if (!configBool) {
             delete json["ConfigSchema"][configValue];
