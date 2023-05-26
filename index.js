@@ -156,30 +156,87 @@ function addBuildingsDatalist () {
     document.getElementById("configoptions").after(buildingOptions);
 }
 
-function addSpringObjectsDatalist() {
-    // * add drop-down menu to select building
+function addCraftablesDatalist() {
+    // * add drop-down menu to select springobject item
     const selectItemElement = document.createElement("select");
     selectItemElement.classList.add("item");
 
-    let vanillaObjects = Object();
+    const craftableOptions = document.createElement("datalist");
+    craftableOptions.id = "craftableoptions";
+
+    let craftableCoordinates = Object();
     fetch(
-        'https://raw.githubusercontent.com/holy-the-sea/CP2AT/main/src/coords_info/springobjects_coords.json')
+        'https://raw.githubusercontent.com/holy-the-sea/CP2AT/main/src/coords_info/craftable_coords.json')
         .then(response => response.json())
-        .then(data => vanillaObjects = data)
+        .then(data => {
+            Object.entries(data).forEach(item => {
+                let itemOption = document.createElement("option");
+                itemOption.value = item[0];
+                itemOption.innerHTML = item[0];
+                craftableOptions.appendChild(itemOption);
+                craftableCoordinates[item[0]] = item[1];
+            })
+        })
+
+    document.getElementById("configoptions").after(craftableOptions);
+    return craftableCoordinates;
+}
+
+function addSpringobjectsDatalist() {
+    // * add drop-down menu to select springobject item
+    const selectItemElement = document.createElement("select");
+    selectItemElement.classList.add("item");
+
     const itemOptions = document.createElement("datalist");
     itemOptions.id = "itemoptions";
 
-    let springobjectCoordinates = {};
+    let springobjectCoordinates = Object();
+    fetch(
+        'https://raw.githubusercontent.com/holy-the-sea/CP2AT/main/src/coords_info/springobjects_coords.json')
+        .then(response => response.json())
+        .then(data => {
+            Object.entries(data).forEach(item => {
+                let itemOption = document.createElement("option");
+                itemOption.value = item[0];
+                itemOption.innerHTML = item[0];
+                itemOptions.appendChild(itemOption);
+                springobjectCoordinates[item[0]] = item[1];
+            })
+        })
 
-    Object.entries(vanillaObjects).forEach(item => {
-        let itemOption = document.createElement("option");
-        itemOption.value = item[0];
-        itemOption.innerHTML = item[0];
-        itemOptions.appendChild(itemOption);
-        springobjectCoordinates[item[0]] = item[1];
-    })
     document.getElementById("configoptions").after(itemOptions);
     return springobjectCoordinates;
+}
+
+function addFurnitureDatalist() {
+    // * add drop-down menu to select furniture piece
+    const selectItemElement = document.createElement("select");
+    selectItemElement.classList.add("furniture");
+
+    const furnitureOptions = document.createElement("datalist");
+    furnitureOptions.id = "furnitureoptions";
+
+    let furnitureCoordinates = Object();
+    fetch(
+        'https://raw.githubusercontent.com/holy-the-sea/CP2AT/main/src/coords_info/furniture_coords.json')
+        .then(response => response.json())
+        // .then(data => vanillaObjects = data)
+        .then(data => {
+            Object.entries(data).forEach(item => {
+                let itemOption = document.createElement("option");
+                itemOption.value = item[0];
+                itemOption.innerHTML = item[0];
+                furnitureOptions.appendChild(itemOption);
+                furnitureCoordinates[item[0]] = item[1];
+                delete furnitureCoordinates[item[0]].Type;
+                delete furnitureCoordinates[item[0]].Rotations;
+                delete furnitureCoordinates[item[0]].Default_Width;
+                delete furnitureCoordinates[item[0]].Default_Height;
+            })
+        })
+
+    document.getElementById("configoptions").after(furnitureOptions);
+    return furnitureCoordinates;
 }
 
 function addDaysOfWeekDatalist () {
@@ -202,7 +259,9 @@ function addDaysOfWeekDatalist () {
 
 addAnimalsDatalist();
 addBuildingsDatalist();
-const springobjectCoordinates = addSpringObjectsDatalist();
+const craftableCoordinates = addCraftablesDatalist();
+const springobjectCoordinates = addSpringobjectsDatalist();
+const furnitureCoordinates = addFurnitureDatalist();
 addPortraitsDatalist();
 addDaysOfWeekDatalist();
 
@@ -334,6 +393,15 @@ function addBuildingsInput() {
     return buildingsInput;
 }
 
+function addCraftablesInput() {
+    const craftablesInput = document.createElement("input");
+    craftablesInput.classList.add("craftablesdropdown");
+    craftablesInput.type = "text";
+    craftablesInput.placeholder = "Craftable (optional)";
+    craftablesInput.setAttribute("list", "craftableoptions");
+    return craftablesInput;
+}
+
 function addItemsInput() {
     const itemsInput = document.createElement("input");
     itemsInput.classList.add("itemsdropdown");
@@ -341,6 +409,15 @@ function addItemsInput() {
     itemsInput.placeholder = "Item (optional)";
     itemsInput.setAttribute("list", "itemoptions");
     return itemsInput;
+}
+
+function addFurnitureInput() {
+    const furnitureInput = document.createElement("input");
+    furnitureInput.classList.add("furnituredropdown");
+    furnitureInput.type = "text";
+    furnitureInput.placeholder = "Furniture piece (optional)";
+    furnitureInput.setAttribute("list", "furnitureoptions");
+    return furnitureInput;
 }
 
 function addPortraitsInput() {
@@ -649,7 +726,7 @@ function handleContentUpdate(ev) {
         const assetElement = change.querySelector(".asset");
 
         let changeObject = {};
-        if (["Furniture", "Tools", "Weapons"].includes(targetElement.value)) {
+        if (["Tools", "Weapons"].includes(targetElement.value)) {
             changeObject.Action = "EditImage";
             changeObject.Target = `TileSheets/${targetElement.value.toLowerCase()}`;
         }
@@ -663,7 +740,7 @@ function handleContentUpdate(ev) {
                 const animalsDropdown = targetElement.nextElementSibling;
                 changeObject.Target = `Animals/${animalsDropdown.value}`;
             }
-            if (["buildingsdropdown", "itemsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["buildingsdropdown", "craftablesdropdown", "itemsdropdown", "furnituredropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
@@ -677,7 +754,37 @@ function handleContentUpdate(ev) {
                 const buildingsDropdown = targetElement.nextElementSibling;
                 changeObject.Target = `Animals/${buildingsDropdown.value}`;
             }
-            if (["animalsdropdown", "itemsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["animalsdropdown", "craftablesdropdown", "itemsdropdown", "furnituredropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+                targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
+            }
+        }
+        else if (targetElement.value === "Craftables") {
+            changeObject.Action = "EditImage";
+            if (targetElement.nextElementSibling.className !== "craftablesdropdown") {
+                const craftablesDropdown = addCraftablesInput();
+                targetElement.after(craftablesDropdown);
+            }
+            if (targetElement.nextElementSibling.className === "craftablesdropdown") {
+                const craftablesDropdown = targetElement.nextElementSibling;
+                changeObject.Target = "TileSheets/Craftables";
+                changeObject.ToArea = craftableCoordinates[craftablesDropdown.value];
+            }
+            if (["animalsdropdown", "buildingsdropdown", "furnituredropdown", "itemsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+                targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
+            }
+        }
+        else if (targetElement.value === "Furniture") {
+            changeObject.Action = "EditImage";
+            if (targetElement.nextElementSibling.className !== "furnituredropdown") {
+                const furnitureDropdown = addFurnitureInput();
+                targetElement.after(furnitureDropdown);
+            }
+            if (targetElement.nextElementSibling.className === "furnituredropdown") {
+                const furnitureDropdown = targetElement.nextElementSibling;
+                changeObject.Target = "TileSheets/Furniture";
+                changeObject.ToArea = furnitureCoordinates[furnitureDropdown.value];
+            }
+            if (["animalsdropdown", "buildingsdropdown", "craftablesdropdown", "itemsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
@@ -692,7 +799,7 @@ function handleContentUpdate(ev) {
                 changeObject.Target = "Maps/springobjects";
                 changeObject.ToArea = springobjectCoordinates[itemsDropdown.value];
             }
-            if (["animalsdropdown", "buildingsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["animalsdropdown", "buildingsdropdown", "craftablesdropdown", "furnituredropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
@@ -706,7 +813,7 @@ function handleContentUpdate(ev) {
                 const portraitsDropdown = targetElement.nextElementSibling;
                 changeObject.Target = `Portraits/${portraitsDropdown.value}`;
             }
-            if (["animalsdropdown", "itemsdropdown", "buildingsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["animalsdropdown", "craftablesdropdown", "furnituredropdown", "itemsdropdown", "buildingsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
