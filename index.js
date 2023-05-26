@@ -156,6 +156,32 @@ function addBuildingsDatalist () {
     document.getElementById("configoptions").after(buildingOptions);
 }
 
+function addSpringObjectsDatalist() {
+    // * add drop-down menu to select building
+    const selectItemElement = document.createElement("select");
+    selectItemElement.classList.add("item");
+
+    let vanillaObjects = Object();
+    fetch(
+        'https://raw.githubusercontent.com/holy-the-sea/CP2AT/main/src/coords_info/springobjects_coords.json')
+        .then(response => response.json())
+        .then(data => vanillaObjects = data)
+    const itemOptions = document.createElement("datalist");
+    itemOptions.id = "itemoptions";
+
+    let springobjectCoordinates = {};
+
+    Object.entries(vanillaObjects).forEach(item => {
+        let itemOption = document.createElement("option");
+        itemOption.value = item[0];
+        itemOption.innerHTML = item[0];
+        itemOptions.appendChild(itemOption);
+        springobjectCoordinates[item[0]] = item[1];
+    })
+    document.getElementById("configoptions").after(itemOptions);
+    return springobjectCoordinates;
+}
+
 function addDaysOfWeekDatalist () {
     // * add drop-down menu to select days of week for config option
     const selectDaysOfWeekElement = document.createElement("select");
@@ -173,8 +199,10 @@ function addDaysOfWeekDatalist () {
     })
     document.getElementById("configoptions").after(daysOfWeekOptions);
 }
+
 addAnimalsDatalist();
 addBuildingsDatalist();
+const springobjectCoordinates = addSpringObjectsDatalist();
 addPortraitsDatalist();
 addDaysOfWeekDatalist();
 
@@ -209,12 +237,53 @@ function addMapFile(selectMapFile) {
     })
 }
 
+function addCustomLocation(ev) {
+    // * add all elements needed to make a patch
+    ev.preventDefault;
+
+    const customLocationElement = document.getElementById("locations");
+    customLocationElement.style.display = "flex";
+
+    // * individual custom location element
+    const individualCustomLocation = document.createElement("div");
+    individualCustomLocation.classList.add("individuallocation");
+    headerElement = document.createElement("h4");
+    headerElement.innerHTML = "Custom Location:";
+    headerElement.classList.add("locationheader");
+    individualCustomLocation.appendChild(headerElement);
+    customLocationElement.appendChild(individualCustomLocation);
+
+    // * name/mapfile dropdowns
+    const dropdownElements = document.createElement("div");
+    dropdownElements.classList.add("locationdropdowns");
+
+    const locationNameInputElement = document.createElement("input");
+    locationNameInputElement.classList.add("locationname")
+    locationNameInputElement.type = "text";
+    locationNameInputElement.placeholder = "Custom Location Name";
+    dropdownElements.appendChild(locationNameInputElement);
+
+    const mapFileElement = document.createElement("select");
+    mapFileElement.classList.add("mapfile");
+    addMapFile(mapFileElement);
+    dropdownElements.appendChild(mapFileElement);
+
+    individualCustomLocation.appendChild(dropdownElements);
+
+    // * cancel button
+    const xElement = addCancelButton();
+    xElement.classList.add("cancelchange");
+    dropdownElements.appendChild(xElement);
+
+    handleContentUpdate(ev);
+}
+
 function addTarget() {
     // * add drop-down menu to select a file to target
     const selectTargetElement = document.createElement("select");
     selectTargetElement.classList.add("target");
 
-    ["(Target)", "Animals", "Buildings", "Craftables", "Furniture", "Portraits", "Tools", "Weapons"].forEach( textOption => {
+    ["(Target)", "Animals", "Buildings", "Craftables", "Items", "Furniture", "Portraits", "Tools", "Weapons"].forEach( textOption => {
         optionElement = document.createElement("option");
         optionElement.value = textOption;
         optionElement.innerHTML = textOption;
@@ -265,6 +334,15 @@ function addBuildingsInput() {
     return buildingsInput;
 }
 
+function addItemsInput() {
+    const itemsInput = document.createElement("input");
+    itemsInput.classList.add("itemsdropdown");
+    itemsInput.type = "text";
+    itemsInput.placeholder = "Item (optional)";
+    itemsInput.setAttribute("list", "itemoptions");
+    return itemsInput;
+}
+
 function addPortraitsInput() {
     const portraitsInput = document.createElement("input");
     portraitsInput.classList.add("portraitsdropdown");
@@ -272,65 +350,6 @@ function addPortraitsInput() {
     portraitsInput.placeholder = "Character name";
     portraitsInput.setAttribute("list", "portraitoptions");
     return portraitsInput;
-}
-
-function addDayOfWeekInput() {
-    const dayOfWeekInput = document.createElement("input");
-    dayOfWeekInput.classList.add("dayofweekdropdown");
-    dayOfWeekInput.type = "text";
-    dayOfWeekInput.placeholder = "Day of Week";
-    dayOfWeekInput.setAttribute("list", "dayofweekoptions");
-    return dayOfWeekInput;
-}
-
-function addCancelButton() {
-    const xElement = document.createElement("button");
-    xElement.type = "button";
-    xElement.classList.add("cancel");
-    xElement.innerHTML = "❌";
-    xElement.onclick = function() {handleDeleteChange(xElement)};
-    return xElement
-}
-
-function addCustomLocation(ev) {
-    // * add all elements needed to make a patch
-    ev.preventDefault;
-
-    const customLocationElement = document.getElementById("locations");
-    customLocationElement.style.display = "flex";
-
-    // * individual custom location element
-    const individualCustomLocation = document.createElement("div");
-    individualCustomLocation.classList.add("individuallocation");
-    headerElement = document.createElement("h4");
-    headerElement.innerHTML = "Custom Location:";
-    headerElement.classList.add("locationheader");
-    individualCustomLocation.appendChild(headerElement);
-    customLocationElement.appendChild(individualCustomLocation);
-
-    // * name/mapfile dropdowns
-    const dropdownElements = document.createElement("div");
-    dropdownElements.classList.add("locationdropdowns");
-
-    const locationNameInputElement = document.createElement("input");
-    locationNameInputElement.classList.add("locationname")
-    locationNameInputElement.type = "text";
-    locationNameInputElement.placeholder = "Custom Location Name";
-    dropdownElements.appendChild(locationNameInputElement);
-
-    const mapFileElement = document.createElement("select");
-    mapFileElement.classList.add("mapfile");
-    addMapFile(mapFileElement);
-    dropdownElements.appendChild(mapFileElement);
-
-    individualCustomLocation.appendChild(dropdownElements);
-
-    // * cancel button
-    const xElement = addCancelButton();
-    xElement.classList.add("cancelchange");
-    dropdownElements.appendChild(xElement);
-
-    handleContentUpdate(ev);
 }
 
 function addChange(ev) {
@@ -406,6 +425,15 @@ function addConfigTextbox(configElement) {
 
     handleConfig(configElement);
 
+}
+
+function addDayOfWeekInput() {
+    const dayOfWeekInput = document.createElement("input");
+    dayOfWeekInput.classList.add("dayofweekdropdown");
+    dayOfWeekInput.type = "text";
+    dayOfWeekInput.placeholder = "Day of Week";
+    dayOfWeekInput.setAttribute("list", "dayofweekoptions");
+    return dayOfWeekInput;
 }
 
 function addSeasonDropdown() {
@@ -538,26 +566,38 @@ function handleDeleteChange(xElement) {
             json["Changes"].splice(i, 1);
             changesElement.removeChild(xElement.parentElement.parentElement);
         }
-        else if (xElement.parentElement.className === "configitem") {
-            const configItemElement = xElement.parentElement;
-            const configValue = configItemElement.querySelector(".configtext").value;
-            delete json["Changes"][i]["When"][configValue];
-            configItemElement.parentElement.removeChild(configItemElement);
-    
-            let configBool = false;
-            json["Changes"].forEach(change => {
-                configBool = (configValue in change["When"]);
-            })
-            if (!configBool) {
-                delete json["ConfigSchema"][configValue];
-            }
-            if (individualChangeElement.querySelector(".config").children.length === 0) {
-                delete json["Changes"][i]["When"];
-            }
+    }
+
+    else if (xElement.parentElement.className === "configitem") {
+        let individualChangeElement = individualElement;
+        const i = Array.prototype.indexOf.call(changesElement.children, individualChangeElement.parentElement.parentElement);
+        const configItemElement = xElement.parentElement;
+        const configValue = configItemElement.querySelector(".configtext").value;
+        delete json["Changes"][i]["When"][configValue];
+        if (configItemElement.parentElement.children.length === 0) {
+            delete json["Changes"][i]["When"];
+        }
+        configItemElement.parentElement.removeChild(configItemElement);
+
+        let configBool = false;
+        json["Changes"].forEach(change => {
+            configBool = (configValue in change["When"]);
+        })
+        if (!configBool) {
+            delete json["ConfigSchema"][configValue];
         }
     }
     handleConfigSchema(json);
     contentOutput.innerHTML = JSON.stringify(json, null, 4);
+}
+
+function addCancelButton() {
+    const xElement = document.createElement("button");
+    xElement.type = "button";
+    xElement.classList.add("cancel");
+    xElement.innerHTML = "❌";
+    xElement.onclick = function() {handleDeleteChange(xElement)};
+    return xElement
 }
 
 function handleConfigSchema(json) {
@@ -623,7 +663,7 @@ function handleContentUpdate(ev) {
                 const animalsDropdown = targetElement.nextElementSibling;
                 changeObject.Target = `Animals/${animalsDropdown.value}`;
             }
-            if (["buildingsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["buildingsdropdown", "itemsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
@@ -637,7 +677,22 @@ function handleContentUpdate(ev) {
                 const buildingsDropdown = targetElement.nextElementSibling;
                 changeObject.Target = `Animals/${buildingsDropdown.value}`;
             }
-            if (["animalsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["animalsdropdown", "itemsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+                targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
+            }
+        }
+        else if (targetElement.value === "Items") {
+            changeObject.Action = "EditImage";
+            if (targetElement.nextElementSibling.className !== "itemsdropdown") {
+                const itemsDropdown = addItemsInput();
+                targetElement.after(itemsDropdown);
+            }
+            if (targetElement.nextElementSibling.className === "itemsdropdown") {
+                const itemsDropdown = targetElement.nextElementSibling;
+                changeObject.Target = "Maps/springobjects";
+                changeObject.ToArea = springobjectCoordinates[itemsDropdown.value];
+            }
+            if (["animalsdropdown", "buildingsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
@@ -651,7 +706,7 @@ function handleContentUpdate(ev) {
                 const portraitsDropdown = targetElement.nextElementSibling;
                 changeObject.Target = `Portraits/${portraitsDropdown.value}`;
             }
-            if (["animalsdropdown", "buildingsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["animalsdropdown", "itemsdropdown", "buildingsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
@@ -668,6 +723,10 @@ function handleContentUpdate(ev) {
             targetElement.parentElement.removeChild(targetElement.nextSibling);
         }
         
+        if (targetElement.value !== "Items" && targetElement.nextElementSibling.className === "itemsdropdown") {
+            targetElement.parentElement.removeChild(targetElement.nextSibling);
+        }
+
         if (targetElement.value !== "Portraits" && targetElement.nextElementSibling.className === "portraitsdropdown") {
             targetElement.parentElement.removeChild(targetElement.nextSibling);
         }
@@ -741,17 +800,28 @@ function handleContentUpdate(ev) {
 
 const fileAssets = [];
 function addImagePreview(file) {
-    const imageElement = document.createElement("img");
     const imagePreviews = document.getElementById("imagepreview");
-    imageElement.id = imagePreviews.children.length;
-    imageElement.src = URL.createObjectURL(file);
     const newPreviewElement = document.createElement("div");
-    newPreviewElement.classList.add("image");
     const newPreviewLabel = document.createElement("p");
-    imagePreviews.appendChild(newPreviewElement);
     newPreviewLabel.innerHTML = file.name;
-    newPreviewElement.appendChild(newPreviewLabel);
-    newPreviewElement.appendChild(imageElement);
+    if (file.name.includes(".png")) {      
+        const imageElement = document.createElement("img");
+        // imageElement.id = imagePreviews.children.length;
+        imageElement.src = URL.createObjectURL(file);
+        newPreviewElement.classList.add("image");
+        imagePreviews.appendChild(newPreviewElement);
+        newPreviewElement.appendChild(newPreviewLabel);
+        newPreviewElement.appendChild(imageElement);
+    }
+    else if (file.name.includes (".tmx")) {
+        const iconElement = document.createElement("p");
+        iconElement.src = URL.createObjectURL(file);
+        iconElement.innerHTML = ("🗺");
+        newPreviewElement.classList.add("mapfile");
+        imagePreviews.appendChild(newPreviewElement);
+        newPreviewElement.appendChild(newPreviewLabel);
+        newPreviewElement.appendChild(iconElement);
+    }
 }
 function dropHandler(ev, fileAssets) {
     // * Prevent default behavior (Prevent file from being opened)
@@ -765,8 +835,8 @@ function dropHandler(ev, fileAssets) {
                 const file = item.getAsFile();
                 fileAssets.push(file);
                 console.log(`File dropped: ${file.name}`);
+                addImagePreview(file);
                 if (file.name.includes(".png")) {
-                    addImagePreview(file);
     
                     const assetDropDowns = document.querySelectorAll(".asset");
                     if (assetDropDowns.length > 0) {
@@ -808,12 +878,6 @@ function dropHandler(ev, fileAssets) {
                                 Array.prototype.forEach(option => {
                                     mapFileList.append(option);
                                 })
-                                if (!mapFileList.includes(file.name)) {
-                                    const optionElement = document.createElement("option");
-                                    optionElement.value = file.name;
-                                    optionElement.innerHTML = file.name;
-                                    dropdown.appendChild(optionElement)
-                                }
                             }
                         });
                     }
