@@ -1039,3 +1039,27 @@ function fileChangeHandler(ev) {
         });
     }
 }
+
+function handleDownload(ev) {
+    ev.preventDefault();
+
+    zip = new JSZip();
+
+    zip.file("manifest.json", document.querySelector("#manifestoutput").innerHTML)
+    zip.file("content.json", document.querySelector("#contentoutput").innerHTML)
+
+    assetsToDownload = document.querySelectorAll(".asset");
+    console.log(`Downloading...`);
+    assetsToDownload.forEach(asset => {
+        console.log(asset.value);
+        fileAssets.forEach(file => {
+            if (file.name === asset.value) {
+                zip.file(`assets/${file.name}`, file, { base64: true });
+            }
+        })
+    })
+    zip.generateAsync({type:"blob"})
+    .then(function (blob) {
+        saveAs(blob, document.querySelector("#modname").value);
+    });
+}
