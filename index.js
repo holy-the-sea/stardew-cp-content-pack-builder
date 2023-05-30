@@ -755,7 +755,7 @@ function handleContentUpdate(ev) {
             }
             if (targetElement.nextElementSibling.className === "buildingsdropdown") {
                 const buildingsDropdown = targetElement.nextElementSibling;
-                changeObject.Target = `Animals/${buildingsDropdown.value}`;
+                changeObject.Target = `Buildings/${buildingsDropdown.value}`;
             }
             if (["animalsdropdown", "craftablesdropdown", "itemsdropdown", "furnituredropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
