@@ -742,6 +742,13 @@ function handleContentUpdate(ev) {
         const assetElement = change.querySelector(".asset");
 
         let changeObject = {};
+
+        if (logNameElement.value) {
+            changeObject.LogName = logNameElement.value;
+        }
+        else if (changeObject.Target !== undefined && !logNameElement.value) {
+            changeObject.LogName = changeObject.Target;
+        }
         
         if (["Tools", "Weapons"].includes(targetElement.value)) {
             changeObject.Action = "EditImage";
@@ -896,13 +903,6 @@ function handleContentUpdate(ev) {
                 }
             })
             changeObject.When = configList;
-        }
-
-        if (logNameElement.value) {
-            changeObject.LogName = logNameElement.value;
-        }
-        else if (changeObject.Target !== undefined && !logNameElement.value) {
-            changeObject.LogName = changeObject.Target;
         }
         value["Changes"].push(changeObject);
     })
