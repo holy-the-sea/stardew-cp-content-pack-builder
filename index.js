@@ -453,7 +453,7 @@ function addChange(ev) {
     const logNameInput = document.createElement("input");
     logNameInput.classList.add("lognameinput");
     logNameInput.type = "text";
-    logNameInput.placeholder = "Log Name";
+    logNameInput.placeholder = "Log Name (optional)";
 
     // * target/asset dropdowns
     const dropdownElements = document.createElement("div");
@@ -718,6 +718,7 @@ function handleContentUpdate(ev) {
 
     value["Changes"] = [];
     value["CustomLocations"] = [];
+    value["ConfigSchema"] = {};
 
     const allCustomLocations = document.querySelectorAll(".individuallocation");
     allCustomLocations.forEach(location => {
@@ -746,8 +747,8 @@ function handleContentUpdate(ev) {
         if (logNameElement.value) {
             changeObject.LogName = logNameElement.value;
         }
-        else if (changeObject.Target !== undefined && !logNameElement.value) {
-            changeObject.LogName = changeObject.Target;
+        else if ((targetElement.value !== "(Target)") && (logNameElement.value.length === 0)) {
+            changeObject.LogName = targetElement.value;
         }
         
         if (["Tools", "Weapons"].includes(targetElement.value)) {
