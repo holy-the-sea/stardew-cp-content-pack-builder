@@ -263,7 +263,7 @@ function addFurnitureDatalist() {
     return furnitureCoordinates;
 }
 
-function addMonstersDatalist () {
+function addMonstersDatalist() {
     // * add drop-down menu to select character for portrait option
     const selectMonsterElement = document.createElement("select");
     selectMonsterElement.classList.add("monster");
@@ -974,7 +974,7 @@ function handleContentUpdate(ev) {
             }
             if (targetElement.nextElementSibling.className === "monstersdropdown") {
                 const monstersDropdown = targetElement.nextElementSibling;
-                changeObject.Target = `Monsters/${monstersDropdown.value}`;
+                changeObject.Target = `Characters/Monsters/${monstersDropdown.value}`;
             }
             if (["animalsdropdown", "craftablesdropdown", "furnituredropdown", "itemsdropdown", "buildingsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
