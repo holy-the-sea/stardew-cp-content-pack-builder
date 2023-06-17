@@ -5,35 +5,59 @@ function addPortraitsDatalist () {
 
     const vanillaCharacters = [
         "Abigail",
+        "Abigail_Beach",
         "Alex",
+        "Alex_Beach",
         "Caroline",
+        "Caroline_Beach",
         "Clint",
+        "Clint_Beach",
         "Demetrius",
         "Elliott",
+        "Elliott_Beach",
         "Emily",
+        "Emily_Beach",
         "Evelyn",
         "George",
         "Gunther",
         "Gus",
         "Haley",
+        "Haley_Beach",
         "Harvey",
+        "Harvey_Beach",
         "Jas",
         "Jodi",
+        "Jodi_Beach",
+        "Krobus",
+        "Krobus_Trenchcoat",
         "Kent",
         "Leah",
+        "Leah_Beach",
         "Lewis",
         "Linus",
         "Marlon",
         "Marnie",
+        "Marnie_Beach",
         "Maru",
+        "Maru_Beach",
+        "Maru_Hospital",
+        "Morris",
+        "MrQi",
         "Pam",
+        "Pam_Beach",
         "Penny",
+        "Penny_Beach",
         "Pierre",
+        "Pierre_Beach",
         "Robin",
+        "Robin_Beach",
         "Sam",
+        "Sam_Beach",
         "Sandy",
         "Sebastian",
+        "Sebastian_Beach",
         "Shane",
+        "Shane_Beach",
         "Vincent",
         "Willy",
         "Wizard"
@@ -239,6 +263,95 @@ function addFurnitureDatalist() {
     return furnitureCoordinates;
 }
 
+function addMonstersDatalist () {
+    // * add drop-down menu to select character for portrait option
+    const selectMonsterElement = document.createElement("select");
+    selectMonsterElement.classList.add("monster");
+
+    const vanillaMonsters = [
+        "Angry Roger",
+        "Armored Bug",
+        "Armored Bug_dangerous",
+        "Bat",
+        "Bat_dangerous",
+        "Big Slime",
+        "Blue Squid",
+        "Bug",
+        "Bug_dangerous",
+        "Carbon Ghost",
+        "Cat",
+        "Crow",
+        "Duggy",
+        "Duggy_dangerous",
+        "Dust Spirit",
+        "Dust Spirit_dangerous",
+        "Dwarvish Sentry",
+        "False Magma Cap",
+        "Fireball",
+        "Fly",
+        "Fly_dangerous",
+        "Frog",
+        "Frost Bat",
+        "Frost Bat_dangerous",
+        "Ghost",
+        "Green Slime",
+        "Green Slime_dangerous",
+        "Grub",
+        "Grub_dangerous",
+        "Haunted Skull",
+        "Haunted Skull_dangerous",
+        "Hot Head",
+        "Iridium Bat",
+        "Iridium Crab",
+        "Lava Bat",
+        "Lava Crab",
+        "Lava Crab_dangerous",
+        "Lava Lurk",
+        "Magma Duggy",
+        "Magma Sparker",
+        "Magma Sprite",
+        "Metal Head",
+        "Metal Head_dangerous",
+        "Mummy",
+        "Mummy_dangerous",
+        "Pepper Rex",
+        "Putrid Ghost",
+        "Rock Crab",
+        "Rock Crab_dangerous",
+        "Royal Serpent",
+        "Serpent",
+        "Shadow Brute",
+        "Shadow Brute_dangerous",
+        "Shadow Girl",
+        "Shadow Shaman",
+        "Shadow Shaman_dangerous",
+        "Shadow Sniper",
+        "Skeleton Mage",
+        "Skeleton Mage_dangerous",
+        "Skeleton",
+        "Skeleton_dangerous",
+        "Spider",
+        "Spiker",
+        "Squid Kid",
+        "Squid Kid_dangerous",
+        "Stick Bug",
+        "Stone Golem",
+        "Stone Golem_dangerous",
+        "Tiger Slime",
+        "Wilderness Golem"
+    ]
+
+    const monsterOptions = document.createElement("datalist");
+    monsterOptions.id = "monsteroptions";
+    vanillaMonsters.forEach(monster => {
+        const monsterOption = document.createElement("option");
+        monsterOption.value = monster;
+        monsterOption.innerHTML = monster;
+        monsterOptions.appendChild(monsterOption);
+    })
+    document.getElementById("configoptions").after(monsterOptions);
+}
+
 function addDaysOfWeekDatalist () {
     // * add drop-down menu to select days of week for config option
     const selectDaysOfWeekElement = document.createElement("select");
@@ -263,6 +376,7 @@ const craftableCoordinates = addCraftablesDatalist();
 const springobjectCoordinates = addSpringobjectsDatalist();
 const furnitureCoordinates = addFurnitureDatalist();
 addPortraitsDatalist();
+addMonstersDatalist();
 addDaysOfWeekDatalist();
 
 function handleManifestUpdate(ev) {
@@ -346,7 +460,7 @@ function addTarget() {
     const selectTargetElement = document.createElement("select");
     selectTargetElement.classList.add("target");
 
-    ["(Target)", "Animals", "Buildings", "Craftables", "Items", "Furniture", "Portraits", "Tools", "Weapons"].forEach( textOption => {
+    ["(Target)", "Animals", "Buildings", "Craftables", "Items", "Furniture", "Monsters", "Portraits", "Tools", "Weapons"].forEach( textOption => {
         optionElement = document.createElement("option");
         optionElement.value = textOption;
         optionElement.innerHTML = textOption;
@@ -431,6 +545,15 @@ function addPortraitsInput() {
     portraitsInput.placeholder = "Character name";
     portraitsInput.setAttribute("list", "portraitoptions");
     return portraitsInput;
+}
+
+function addMonstersInput() {
+    const monstersInput = document.createElement("input");
+    monstersInput.classList.add("monstersdropdown");
+    monstersInput.type = "text";
+    monstersInput.placeholder = "Monster";
+    monstersInput.setAttribute("list", "monsteroptions");
+    return monstersInput;
 }
 
 function addChange(ev) {
@@ -765,7 +888,7 @@ function handleContentUpdate(ev) {
                 const animalsDropdown = targetElement.nextElementSibling;
                 changeObject.Target = `Animals/${animalsDropdown.value}`;
             }
-            if (["buildingsdropdown", "craftablesdropdown", "itemsdropdown", "furnituredropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["buildingsdropdown", "craftablesdropdown", "itemsdropdown", "furnituredropdown", "monstersdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
@@ -779,7 +902,7 @@ function handleContentUpdate(ev) {
                 const buildingsDropdown = targetElement.nextElementSibling;
                 changeObject.Target = `Buildings/${buildingsDropdown.value}`;
             }
-            if (["animalsdropdown", "craftablesdropdown", "itemsdropdown", "furnituredropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["animalsdropdown", "craftablesdropdown", "itemsdropdown", "furnituredropdown", "monstersdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
@@ -794,7 +917,7 @@ function handleContentUpdate(ev) {
                 changeObject.Target = "TileSheets/Craftables";
                 changeObject.ToArea = craftableCoordinates[craftablesDropdown.value];
             }
-            if (["animalsdropdown", "buildingsdropdown", "furnituredropdown", "itemsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["animalsdropdown", "buildingsdropdown", "furnituredropdown", "itemsdropdown", "monstersdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
@@ -809,7 +932,7 @@ function handleContentUpdate(ev) {
                 changeObject.Target = "TileSheets/Furniture";
                 changeObject.ToArea = furnitureCoordinates[furnitureDropdown.value];
             }
-            if (["animalsdropdown", "buildingsdropdown", "craftablesdropdown", "itemsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["animalsdropdown", "buildingsdropdown", "craftablesdropdown", "itemsdropdown", "monstersdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
@@ -824,7 +947,7 @@ function handleContentUpdate(ev) {
                 changeObject.Target = "Maps/springobjects";
                 changeObject.ToArea = springobjectCoordinates[itemsDropdown.value];
             }
-            if (["animalsdropdown", "buildingsdropdown", "craftablesdropdown", "furnituredropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["animalsdropdown", "buildingsdropdown", "craftablesdropdown", "furnituredropdown", "monstersdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
@@ -838,7 +961,22 @@ function handleContentUpdate(ev) {
                 const portraitsDropdown = targetElement.nextElementSibling;
                 changeObject.Target = `Portraits/${portraitsDropdown.value}`;
             }
-            if (["animalsdropdown", "craftablesdropdown", "furnituredropdown", "itemsdropdown", "buildingsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+            if (["animalsdropdown", "craftablesdropdown", "furnituredropdown", "itemsdropdown", "monstersdropdown", "buildingsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
+                targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
+            }
+        }
+
+        else if (targetElement.value === "Monsters") {
+            changeObject.Action = "EditImage";
+            if (targetElement.nextElementSibling.className !== "monstersdropdown") {
+                const monstersDropdown = addMonstersInput();
+                targetElement.after(monstersDropdown);
+            }
+            if (targetElement.nextElementSibling.className === "monstersdropdown") {
+                const monstersDropdown = targetElement.nextElementSibling;
+                changeObject.Target = `Monsters/${monstersDropdown.value}`;
+            }
+            if (["animalsdropdown", "craftablesdropdown", "furnituredropdown", "itemsdropdown", "buildingsdropdown", "portraitsdropdown"].includes(targetElement.nextElementSibling.nextElementSibling.className)) {
                 targetElement.parentElement.removeChild(targetElement.nextElementSibling.nextElementSibling);
             }
         }
