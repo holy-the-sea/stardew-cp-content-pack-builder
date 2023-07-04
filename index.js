@@ -387,6 +387,7 @@ function handleManifestUpdate(ev) {
     value["ContentPackFor"] = {
         "UniqueID": "Pathoschild.ContentPatcher"
     }
+    value["UpdateKeys"] = [value["UpdateKeys"]]
 
 
     let json = JSON.stringify(value, null, 4);
